@@ -44,7 +44,7 @@ const displayNews = (allNews, category) => {
                         <img src="${news.author.img}" class="rounded-circle" style="width: 50px; height: 50px">
                         <h5 class="ms-4">${news.author.name ? news.author.name : 'Author name not found'}</h5>
                     </div>
-                <p>Views: ${news.total_view? news.total_view : 'No views'}</p>
+                <p>Views: ${news.total_view ? news.total_view : 'No views'}</p>
                 <button onclick="loadDetails('${news._id}')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 Show More
                 </button>
@@ -57,4 +57,25 @@ const displayNews = (allNews, category) => {
     })
 }
 
+// Load News Details by id
+const loadDetails = newsId => {
+    const url = `https://openapi.programming-hero.com/api/news/${newsId}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displayDetails(data.data[0]))
+        .catch(error => console.log(error))
+}
+const displayDetails = news => {
+    console.log(news);
+    const modalTitle = document.getElementById('staticBackdropLabel');
+    modalTitle.innerText = news.title
+    const modalContainer = document.getElementById('modal-body');
+    modalContainer.innerHTML = ` 
+        <img src="${news.image_url}" class="img-fluid">  
+        <p>${news.details}</p>
+        <p><b>View</b>: ${news.total_view ? news.total_view : 'No Views'}</p>
+        <p><b>Author</b>: ${news.author.name ? news.author.name : 'No Author name found'}</p>
+        <p><b>Publish date</b>: ${news.author.published_date}</p>
+    `;
+}
 loadNews('01')
