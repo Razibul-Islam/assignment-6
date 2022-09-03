@@ -35,8 +35,18 @@ const newContentNews = contentNew => {
         <div class="card">
             <img src="${newContent.image_url}" class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title">${newContent.title}</h5>
-            <p class="card-text">${newContent.details}</p>
+            <h5 class="card-title">${newContent.title.slice(0,50)}...</h5>
+            <p class="card-text">${newContent.details.slice(0, 200)}...</p>
+            <div class="card-footer">
+                <small class="text-muted d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="${newContent.author.img}" class="rounded-circle" style="width: 50px; height: 50px">
+                        <h5 class="ms-4">${newContent.author.name}</h5>
+                    </div>
+                <p>Views: ${newContent.total_view}</p>
+                <a href="#" class="btn btn-primary">More Details</a>
+                </small>
+            </div>
         </div>
         </div>
         `;
