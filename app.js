@@ -28,8 +28,14 @@ const loadNews = category => {
 }
 
 const displayNews = (allNews, category) => {
-    const newsContainer = document.getElementById('news-container')
+    const newsContainer = document.getElementById('news-container');
+    newsContainer.innerHTML = ``;
+
+    const newsCount = document.getElementById('news-count');
+    let count = 0;
+
     allNews.forEach(news => {
+        count++;
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('col');
         cardDiv.innerHTML = `
@@ -55,27 +61,61 @@ const displayNews = (allNews, category) => {
         `;
         newsContainer.appendChild(cardDiv);
     })
-}
 
-// Load News Details by id
-const loadDetails = newsId => {
-    const url = `https://openapi.programming-hero.com/api/news/${newsId}`;
-    fetch(url)
+
+    // Update category Count
+    fetch('https://openapi.programming-hero.com/api/news/categories')
         .then(res => res.json())
-        .then(data => displayDetails(data.data[0]))
+        .then(data => findCategoryName(data.data.news_category, category))
         .catch(error => console.log(error))
-}
-const displayDetails = news => {
-    console.log(news);
-    const modalTitle = document.getElementById('staticBackdropLabel');
-    modalTitle.innerText = news.title
-    const modalContainer = document.getElementById('modal-body');
-    modalContainer.innerHTML = ` 
+
+    const findCategoryName = (allCategories, categoryId) => {
+        allCategories.forEach(e => {
+            if (e.category_id === categoryId) {
+                if (count === 0) {
+                    newsCount.innerText = `No item found!`;
+                } else {
+                    newsCount.innerText = `${count} item found from ${e.category_name}`;
+                }
+            }
+        })
+    }
+
+    // Load News Details by id
+    const loadDetails = newsId => {
+        const url = `https://openapi.programming-hero.com/api/news/${newsId}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => displayDetails(data.data[0]))
+            .catch(error => console.log(error))
+    }
+    const displayDetails = news => {
+        const modalTitle = document.getElementById('staticBackdropLabel');
+        modalTitle.innerText = news.title
+        const modalContainer = document.getElementById('modal-body');
+        modalContainer.innerHTML = ` 
         <img src="${news.image_url}" class="img-fluid">  
         <p>${news.details}</p>
         <p><b>View</b>: ${news.total_view ? news.total_view : 'No Views'}</p>
         <p><b>Author</b>: ${news.author.name ? news.author.name : 'No Author name found'}</p>
         <p><b>Publish date</b>: ${news.author.published_date}</p>
     `;
+    }
+
+    document.getElementById('new-nav').addEventListener('click', (e) => {
+        const selectCategory = e.target.innerText;
+        fetch('https://openapi.programming-hero.com/api/news/categories')
+            .then(res => res.json())
+            .then(data => callLoadNewsByCategory(selectCategory, data.data.news_category))
+            .catch(error => console.log(error))
+    });
+
+    const callLoadNewsByCategory = (selectCategory, categories) => {
+        categories.forEach(category => {
+            if (category.category_name === selectCategory) {
+                loadNews(`${category.category_id}`);
+            }
+        })
+    }
 }
 loadNews('01')
