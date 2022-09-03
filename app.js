@@ -45,6 +45,9 @@ const displayNews = (allNews, category) => {
                         <h5 class="ms-4">${news.author.name ? news.author.name : 'Author name not found'}</h5>
                     </div>
                 <p>Views: ${news.total_view? news.total_view : 'No views'}</p>
+                <button onclick="loadDetails('${news._id}')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Show More
+                </button>
                 </small>
             </div>
         </div>
