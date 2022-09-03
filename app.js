@@ -8,7 +8,6 @@ const loadCategoriesName = () => {
 
 const displayCategoriesName = allCategories => {
     const ulParent = document.getElementById('new-nav');
-    // categoriesContainer.innerHTML = ``;
     allCategories.forEach(newsAll => {
         const liCreate = document.createElement('li');
         liCreate.classList.add('nav-item');
